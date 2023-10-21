@@ -1,0 +1,11 @@
+diff --git a/python/postprocessing/examples/exampleModule.py b/python/postprocessing/examples/exampleModule.py
+index aa2a606..3d66058 100644
+--- a/python/postprocessing/examples/exampleModule.py
++++ b/python/postprocessing/examples/exampleModule.py
+@@ -40,4 +40,5 @@ class exampleProducer(Module):
+ 
+ # define modules using the syntax 'name = lambda : constructor' to avoid having them loaded when not needed
+ 
+-exampleModuleConstr = lambda: exampleProducer(jetSelection=lambda j: j.pt > 30)
++exampleModuleConstr = lambda: exampleProducer(jetSelection=lambda j: j.pt > 20)
++

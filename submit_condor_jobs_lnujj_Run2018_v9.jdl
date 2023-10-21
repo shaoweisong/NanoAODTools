@@ -1,0 +1,13 @@
++JobFlavour   = "microcentury"
+Executable = submit_condor_jobs_lnujj_Run2018_v9.sh
+Universe = vanilla
+Notification = ERROR
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = keep_and_drop.txt,  post_proc.py
+x509userproxy = $ENV(X509_USER_PROXY)
+Output = ./condor_logs/Run2018_v9/230926_125054/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8_$(Process).stdout
+Error  = ./condor_logs/Run2018_v9/230926_125054/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8_$(Process).stdout
+Log  = ./condor_logs/Run2018_v9/230926_125054/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8_$(Process).log
+Arguments = root:\/\/cms-xrd-global.cern.ch\/\/store\/mc\/RunIISummer20UL18NanoAODv9\/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8\/NANOAODSIM\/106X_upgrade2018_realistic_v16_L1v1-v1\/280000\/6875161B-255C-BE4D-950F-6FBD12DDE0D2.root /eos/user/r/rasharma/nanoAOD_ntuplesRun2018_v9/GluGluHToZZTo4L_M125_TuneCP5_13TeV_powheg2_JHUGenV7011_pythia8/230926_125054  /eos/user/r/rasharma/nanoAOD_ntuplesRun2018_v9
+Queue 
