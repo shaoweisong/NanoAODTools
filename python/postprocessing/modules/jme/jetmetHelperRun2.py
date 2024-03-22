@@ -14,7 +14,7 @@ jecTagsMC = {
     '2018': 'Autumn18_V19_MC',
     'UL2016_preVFP': 'Summer19UL16APV_V7_MC',
     'UL2016': 'Summer19UL16_V7_MC',
-    'UL2017': 'Summer19UL17_V5_MC',
+    'UL2017': 'Summer19UL17_V6_MC',
     'UL2018': 'Summer19UL18_V5_MC',
 }
 
@@ -78,7 +78,7 @@ jerTagsMC = {
     '2018': 'Autumn18_V7b_MC',
     'UL2016_preVFP': 'Summer20UL16APV_JRV3_MC',
     'UL2016': 'Summer20UL16_JRV3_MC',
-    'UL2017': 'Summer19UL17_JRV2_MC',
+    'UL2017': 'Summer19UL17_JRV3_MC',
     'UL2018': 'Summer19UL18_JRV2_MC',
 }
 
@@ -199,3 +199,14 @@ def createJMECorrector(isMC=True,
 #jmeCorrections = createJMECorrector(False, "2016", "B", "Total", True, "AK4PFchs", False)
 # include jmeCorrections() in the list of modules to run.
 ###
+jmeCorrections_mc_2017 = createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
+jmeCorrections_mc_fatjet_2017 = createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
+
+jmeCorrections_mc_2018 = createJMECorrector(isMC=True, dataYear="UL2018", runPeriod="B", jesUncert="Total", jetType="AK4PFchs",applyHEMfix=True)
+jmeCorrections_mc_fatjet_2018 = createJMECorrector(isMC=True, dataYear="UL2018", runPeriod="B", jesUncert="Total", jetType="AK8PFchs",applyHEMfix=True)
+
+jmeCorrections_mc_2016pre = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
+jmeCorrections_mc_fatjet_2016pre = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
+
+jmeCorrections_mc_2016post = createJMECorrector(isMC=True, dataYear="UL2016", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
+jmeCorrections_mc_fatjet_2016post = createJMECorrector(isMC=True, dataYear="UL2016", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")

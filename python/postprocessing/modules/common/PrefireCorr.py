@@ -74,8 +74,9 @@ class PrefCorr(Module):
 
     def beginFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         self.out = wrappedOutputTree
-        for bname in self.branchnames:
-            self.out.branch(bname, "F")
+        self.out.branch("PrefireWeight", "F")
+        self.out.branch("PrefireWeight_Up", "F")
+        self.out.branch("PrefireWeight_Down", "F")
 
     def endFile(self, inputFile, outputFile, inputTree, wrappedOutputTree):
         pass
@@ -122,6 +123,7 @@ class PrefCorr(Module):
 
             # Then loop over all photons/electrons not associated to jets
             prefw *= self.EGvalue(event, -1)
+
             self.out.fillBranch(bname, prefw)
         return True
 
@@ -172,6 +174,7 @@ class PrefCorr(Module):
         return phopf
 
     def GetPrefireProbability(self, Map, eta, pt, maxpt):
+        
         bin = Map.FindBin(eta, min(pt, maxpt - 0.01))
         pref_prob = Map.GetBinContent(bin)
 
@@ -185,3 +188,4 @@ class PrefCorr(Module):
             pref_prob = max(pref_prob - math.sqrt(stat * stat + syst * syst),
                             0.0)
         return pref_prob
+Prefcorr_2017 = lambda : PrefCorr(jetroot="L1prefiring_jetpt_2017BtoF.root",jetmapname="L1prefiring_jetpt_2017BtoF",photonroot="L1prefiring_photonpt_2017BtoF.root",photonmapname="L1prefiring_photonpt_2017BtoF")

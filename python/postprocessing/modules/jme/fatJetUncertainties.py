@@ -162,6 +162,8 @@ class fatJetUncertaintiesProducer(Module):
                 sources = [x[1:-1] for x in sources]
                 self.jesUncertainties = sources
         if applyHEMfix:
+            print("add HEM issue to JES uncertainties")
+
             self.jesUncertainties.append("HEMIssue")
 
         self.jetReCalibrator = JetReCalibrator(
