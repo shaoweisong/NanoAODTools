@@ -99,6 +99,7 @@ class PostProcessor:
         outpostfix = self.postfix if self.postfix is not None else (
             "_Friend" if self.friend else "_Skim")
         if not self.noOut:
+            print("compression = %s" % self.compression)
 
             if self.compression != "none":
                 ROOT.gInterpreter.ProcessLine("#include <Compression.h>")

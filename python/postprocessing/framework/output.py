@@ -20,7 +20,7 @@ _rootBranchType2PythonArray = {
 class OutputBranch:
     def __init__(
             self, tree, name, rootBranchType, n=1,
-            lenVar=None, title=None, limitedPrecision=False
+            lenVar=None, title=None, limitedPrecision=True
     ):
         n = int(n)
         self.buff = array(
@@ -74,7 +74,7 @@ class OutputTree:
 
     def branch(
             self, name, rootBranchType, n=1, lenVar=None,
-            title=None, limitedPrecision=False
+            title=None, limitedPrecision=True
     ):
         # and (not self._tree.GetBranch(lenVar)):
         if (lenVar != None) and (lenVar not in self._branches):
