@@ -62,7 +62,6 @@ def clearExtraBranches(tree):
 def setExtraBranch(tree, name, val):
     tree._extrabranches[name] = val
 
-
 def readBranch(tree, branchName):
     """Return the branch value if the branch is a value, and a TreeReaderArray if the branch is an array"""
     if tree._ttreereader._isClean:

@@ -50,3 +50,8 @@ class BranchSelection():
                         tree.SetBranchStatus(n, stat)
             else:
                 tree.SetBranchStatus(bre, stat)
+                
+        #print the photon_pt branch events values
+        for i in range(tree.GetEntries()):
+            tree.GetEntry(i)
+
