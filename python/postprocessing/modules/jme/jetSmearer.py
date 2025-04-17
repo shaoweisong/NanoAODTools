@@ -142,7 +142,8 @@ class jetSmearer(Module):
                     self.params_sf_and_uncertainty, enum_central_or_shift)
 
         smear_vals = {}
-        if genJet:
+
+        if genJet: 
             for central_or_shift in [
                     enum_nominal, enum_shift_up, enum_shift_down
             ]:
@@ -154,7 +155,13 @@ class jetSmearer(Module):
                 smearFactor = 1. + \
                     (jet_pt_sf_and_uncertainty[central_or_shift] - 1.) * dPt /  jet.Perp()
                 smear_vals[central_or_shift] = smearFactor
-        else:
+        #FIXED for JET HORN ISSUE
+        elif ((jet.Pt() < 50.) & (abs(jet.Eta())>2.5)&(abs(jet.Eta())<3.0)):
+            # Case 4: Jet pt < 50 GeV and eta in the range [2.5, 3.0]
+            for central_or_shift in [enum_nominal, enum_shift_up, enum_shift_down]:
+                smearFactor = 1.
+                smear_vals[central_or_shift] = smearFactor
+        else:                
             self.params_resolution.setJetPt(jet.Perp())
             self.params_resolution.setJetEta(jet.Eta())
             self.params_resolution.setRho(rho)
