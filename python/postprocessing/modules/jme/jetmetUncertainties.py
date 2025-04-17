@@ -565,7 +565,7 @@ class jetmetUncertaintiesProducer(Module):
             # Pei-Zhu
             # FIXED for JET HORN ISSUE
             if (self.applySmearing and genJet is not None and 
-                not (jet_pt < 50 and 2.5 < abs(jet.eta) < 3.0)):
+                not (jet_pt < 50 and 2.5 < abs(jet.eta) < 3.0 and "2016" not in self.era) ):
                 jet_pt_nom = jet_pt * jet_pt_jerNomVal
                 jet_mass_nom = jet_pt_jerNomVal * jet_mass
             else:
