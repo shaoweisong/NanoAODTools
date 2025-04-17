@@ -22,7 +22,7 @@ class jetmetUncertaintiesProducer(Module):
                  jesUncertainties=["Total"],
                  archive=None,
                  globalTagProd=None,
-                 jetType="AK4PFchs",
+                 jetType="AK4PFPuppi",
                  metBranchName="MET",
                  jerTag="",
                  isData=False,
@@ -46,7 +46,8 @@ class jetmetUncertaintiesProducer(Module):
         else:
             self.splitJERIDs = [""]  # "empty" ID for the overall JER
         self.metBranchName = metBranchName
-        self.rhoBranchName = "fixedGridRhoFastjetAll"
+        # self.rhoBranchName = "fixedGridRhoFastjetAll" # Run2 NanoAOD V9
+        self.rhoBranchName = "Rho_fixedGridRhoFastjetAll" # Run3 NanoAOD V12
         # --------------------------------------------------------------------
         # CV: globalTag and jetType not yet used in the jet smearer, as there
         # is no consistent set of txt files for JES uncertainties and JER scale
@@ -544,19 +545,33 @@ class jetmetUncertaintiesProducer(Module):
             # evaluate JER scale factors and uncertainties
             # cf. https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution and
             # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyResolution
+            # Pei-Zhu 
             if not self.isData:
-                # Get the smearing factors for MET correction
-                (jet_pt_jerNomVal, jet_pt_jerUpVal,
-                 jet_pt_jerDownVal) = self.jetSmearer.getSmearValsPt(
-                     jet, genJet, rho)
+                # Only apply JER smearing if the jet is matched to a genJet
+                if genJet is not None:
+                    (jet_pt_jerNomVal, jet_pt_jerUpVal,
+                    jet_pt_jerDownVal) = self.jetSmearer.getSmearValsPt(
+                        jet, genJet, rho)
+                else:
+                    # No genJet match, do not apply smearing
+                    (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1, 1, 1)
             else:
                 # if you want to do something with JER in data, please add it here.
-                (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1, 1,
-                                                                          1)
+                (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1, 1, 1)
 
             # these are the important jet pt values
             #jet_pt_nom = jet_pt if jet_pt > 0 else 0
-            jet_pt_nom = jet_pt * jet_pt_jerNomVal if self.applySmearing else jet_pt
+            # Apply JER smearing only if conditions are met
+            # Pei-Zhu
+            # FIXED for JET HORN ISSUE
+            if (self.applySmearing and genJet is not None and 
+                not (jet_pt < 50 and 2.5 < abs(jet.eta) < 3.0)):
+                jet_pt_nom = jet_pt * jet_pt_jerNomVal
+                jet_mass_nom = jet_pt_jerNomVal * jet_mass
+            else:
+                jet_pt_nom = jet_pt
+                jet_mass_nom = jet_mass
+
             jet_pt_L1L2L3 = jet_pt_noMuL1L2L3 + muon_pt
             jet_pt_L1 = jet_pt_noMuL1 + muon_pt
 
@@ -582,7 +597,6 @@ class jetmetUncertaintiesProducer(Module):
                     delta_x_rawJet += jet_rawpt * math.cos(jet.phi)
                     delta_y_rawJet += jet_rawpt * math.sin(jet.phi)
 
-            jet_mass_nom = jet_pt_jerNomVal * jet_mass if self.applySmearing else jet_mass
             if jet_mass_nom < 0.0:
                 jet_mass_nom *= -1.0
 

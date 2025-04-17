@@ -15,9 +15,9 @@ class jetSmearer(Module):
     def __init__(
             self,
             globalTag,
-            jetType="AK4PFchs",
-            jerInputFileName="Spring16_25nsV10_MC_PtResolution_AK4PFchs.txt",
-            jerUncertaintyInputFileName="Spring16_25nsV10_MC_SF_AK4PFchs.txt",
+            jetType="AK4PFPuppi",
+            jerInputFileName="Summer22_22Sep2023_JRV1_MC_PtResolution_AK4PFPuppi.txt",
+            jerUncertaintyInputFileName="Summer22_22Sep2023_JRV1_MC_SF_AK4PFPuppi.txt",
             jmr_vals=[1.09, 1.14, 1.04]):
 
         # -------------------------------------------------------------------

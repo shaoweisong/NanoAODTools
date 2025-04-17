@@ -7,6 +7,7 @@ from PhysicsTools.NanoAODTools.postprocessing.modules.jme.jetmetUncertainties im
 from PhysicsTools.NanoAODTools.postprocessing.modules.jme.fatJetUncertainties import *
 
 # JEC dict
+# MC 
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC#Recommended_for_MC
 jecTagsMC = {
     '2016': 'Summer16_07Aug2017_V11_MC',
@@ -16,6 +17,10 @@ jecTagsMC = {
     'UL2016': 'Summer19UL16_V7_MC',
     'UL2017': 'Summer19UL17_V6_MC',
     'UL2018': 'Summer19UL18_V5_MC',
+    '2022preEE'   : 'Summer22_22Sep2023_V2_MC',
+    '2022postEE'  : 'Summer22EE_22Sep2023_V2_MC',
+    '2023preBPix' : 'Summer23Prompt23_V1_MC',
+    '2023postBPix': 'Summer23BPixPrompt23_V1_MC',
 }
 
 jecTagsFastSim = {
@@ -23,7 +28,7 @@ jecTagsFastSim = {
     '2017': 'Fall17_FastSimV1_MC',
     '2018': 'Autumn18_FastSimV1_MC',
 }
-
+# Data
 # https://twiki.cern.ch/twiki/bin/viewauth/CMS/JECDataMC#Recommended_for_Data
 archiveTagsDATA = {
     '2016': 'Summer16_07Aug2017_V11_DATA',
@@ -32,7 +37,11 @@ archiveTagsDATA = {
     'UL2016_preVFP': 'Summer19UL16APV_V7_DATA',
     'UL2016': 'Summer19UL16_V7_DATA',
     'UL2017': 'Summer19UL17_V5_DATA',
-    'UL2018': 'Summer19UL18_V5_DATA'
+    'UL2018': 'Summer19UL18_V5_DATA',
+    '2022preEE': 'Summer19UL18_V5_DATA', # Not release yet 
+    '2022postEE': 'Summer19UL18_V5_DATA', # Not release yet
+    '2023preBPix': 'Summer19UL18_V5_DATA', # Not release yet
+    '2023postBPix': 'Summer19UL18_V5_DATA', # Not release yet
 }
 
 jecTagsDATA = {
@@ -69,9 +78,17 @@ jecTagsDATA = {
     'UL2018B': 'Summer19UL18_RunB_V5_DATA',
     'UL2018C': 'Summer19UL18_RunC_V5_DATA',
     'UL2018D': 'Summer19UL18_RunD_V5_DATA',
+    '2022preEECD' : 'Summer22_22Sep2023_RunCD_V2_DATA',
+    '2022postEEE' : 'Summer22EE_22Sep2023_RunE_V2_DATA',
+    '2022postEEF' : 'Summer22EE_22Sep2023_RunF_V2_DATA',
+    '2022postEEG' : 'Summer22EE_22Sep2023_RunG_V2_DATA',
+    '2023preBPixC': 'Summer23Prompt23_RunCv4_V1_DATA',
+    '2023postBPixD': 'Summer23BPixPrompt23_RunD_V1_DATA',
 }
 
 # https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution
+# https://cms-jerc.web.cern.ch/Recommendations/#jet-energy-resolution
+# MC 
 jerTagsMC = {
     '2016': 'Summer16_25nsV1_MC',
     '2017': 'Fall17_V3_MC',
@@ -80,6 +97,10 @@ jerTagsMC = {
     'UL2016': 'Summer20UL16_JRV3_MC',
     'UL2017': 'Summer19UL17_JRV3_MC',
     'UL2018': 'Summer19UL18_JRV2_MC',
+    '2022preEE'   : 'Summer22_22Sep2023_JRV1_MC',
+    '2022postEE'  : 'Summer22EE_22Sep2023_JRV1_MC',
+    '2023preBPix' : 'Summer23Prompt23_RunCv1234_JRV1_MC',
+    '2023postBPix': 'Summer23Prompt23_RunCv1234_JRV1_MC',
 }
 
 # jet mass resolution: https://twiki.cern.ch/twiki/bin/view/CMS/JetWtagging
@@ -93,6 +114,10 @@ jmrValues = {
     'UL2016': [1.00, 1.00, 1.00],  # placeholder
     'UL2017': [1.00, 1.00, 1.00],  # placeholder
     'UL2018': [1.00, 1.00, 1.00],  # placeholder
+    '2022preEE': [1.00, 1.00, 1.00],  # placeholder
+    '2022postEE': [1.00, 1.00, 1.00],  # placeholder
+    '2023preBPix': [1.00, 1.00, 1.00],  # placeholder
+    '2023postBPix': [1.00, 1.00, 1.00],  # placeholder
 }
 
 # jet mass scale
@@ -107,6 +132,10 @@ jmsValues = {
     'UL2016': [1.000, 1.000, 1.000],  # placeholder
     'UL2017': [1.000, 1.000, 1.000],  # placeholder
     'UL2018': [1.000, 1.000, 1.000],  # placeholder
+    '2022preEE': [1.000, 1.000, 1.000],  # placeholder
+    '2022postEE': [1.000, 1.000, 1.000],  # placeholder
+    '2023preBPix': [1.000, 1.000, 1.000],  # placeholder
+    '2023postBPix': [1.000, 1.000, 1.000],  # placeholder
 }   
 
 
@@ -199,14 +228,14 @@ def createJMECorrector(isMC=True,
 #jmeCorrections = createJMECorrector(False, "2016", "B", "Total", True, "AK4PFchs", False)
 # include jmeCorrections() in the list of modules to run.
 ###
-jmeCorrections_mc_2017 = createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
-jmeCorrections_mc_fatjet_2017 = createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
+jmeCorrections_mc_2017 = lambda: createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
+jmeCorrections_mc_fatjet_2017 = lambda: createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
 
-jmeCorrections_mc_2018 = createJMECorrector(isMC=True, dataYear="UL2018", runPeriod="B", jesUncert="Total", jetType="AK4PFchs",applyHEMfix=True)
-jmeCorrections_mc_fatjet_2018 = createJMECorrector(isMC=True, dataYear="UL2018", runPeriod="B", jesUncert="Total", jetType="AK8PFchs",applyHEMfix=True)
+jmeCorrections_mc_2018 = lambda: createJMECorrector(isMC=True, dataYear="UL2018", runPeriod="B", jesUncert="Total", jetType="AK4PFchs", applyHEMfix=True)
+jmeCorrections_mc_fatjet_2018 = lambda: createJMECorrector(isMC=True, dataYear="UL2018", runPeriod="B", jesUncert="Total", jetType="AK8PFchs", applyHEMfix=True)
 
-jmeCorrections_mc_2016pre = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
-jmeCorrections_mc_fatjet_2016pre = createJMECorrector(isMC=True, dataYear="UL2016_preVFP", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
+jmeCorrections_mc_2016pre = lambda: createJMECorrector(isMC=True, dataYear="UL2016_preVFP", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
+jmeCorrections_mc_fatjet_2016pre = lambda: createJMECorrector(isMC=True, dataYear="UL2016_preVFP", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
 
-jmeCorrections_mc_2016post = createJMECorrector(isMC=True, dataYear="UL2016", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
-jmeCorrections_mc_fatjet_2016post = createJMECorrector(isMC=True, dataYear="UL2016", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
+jmeCorrections_mc_2016post = lambda: createJMECorrector(isMC=True, dataYear="UL2016", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
+jmeCorrections_mc_fatjet_2016post = lambda: createJMECorrector(isMC=True, dataYear="UL2016", runPeriod="B", jesUncert="Total", jetType="AK8PFchs")
