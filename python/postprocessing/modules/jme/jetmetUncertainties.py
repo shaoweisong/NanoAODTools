@@ -46,8 +46,10 @@ class jetmetUncertaintiesProducer(Module):
         else:
             self.splitJERIDs = [""]  # "empty" ID for the overall JER
         self.metBranchName = metBranchName
-        # self.rhoBranchName = "fixedGridRhoFastjetAll" # Run2 NanoAOD V9
-        self.rhoBranchName = "Rho_fixedGridRhoFastjetAll" # Run3 NanoAOD V12
+        if "2016" in self.era or "2017" in self.era or "2018" in self.era:  
+            self.rhoBranchName = "fixedGridRhoFastjetAll" # Run2 NanoAOD V9
+        if "2022" in self.era or "2023" in self.era:
+            self.rhoBranchName = "Rho_fixedGridRhoFastjetAll" # Run3 NanoAOD V12
         # --------------------------------------------------------------------
         # CV: globalTag and jetType not yet used in the jet smearer, as there
         # is no consistent set of txt files for JES uncertainties and JER scale
@@ -82,6 +84,9 @@ class jetmetUncertaintiesProducer(Module):
 
         self.jetSmearer = jetSmearer(globalTag, jetType, self.jerInputFileName,
                                      self.jerUncertaintyInputFileName)
+
+        # PZ, to store match info
+        self.jetMatchedGenJet = []
 
         if "AK4" in jetType:
             self.jetBranchName = "Jet"
@@ -256,6 +261,12 @@ class jetmetUncertaintiesProducer(Module):
         self.out.branch("%s_corr_JER" % self.jetBranchName,
                         "F",
                         lenVar=self.lenVar)
+
+        # PZ, to store match info
+        # Add branch for genJet matching (boolean array)
+        self.out.branch("%s_matchedGenJet" % self.jetBranchName, 
+                        "O", 
+                        lenVar=self.lenVar)  # 'O' for boolean
 
         self.out.branch("%s_T1_pt" % self.metBranchName, "F")
         self.out.branch("%s_T1_phi" % self.metBranchName, "F")
@@ -467,6 +478,9 @@ class jetmetUncertaintiesProducer(Module):
                                                presel=resolution_matching)
             pairs.update(lowPtPairs)
 
+            # PZ, to store match jet
+            self.jetMatchedGenJet = []
+
         for iJet, jet in enumerate(itertools.chain(jets, lowPtJets)):
             # jet pt and mass corrections
             jet_pt = jet.pt
@@ -497,6 +511,9 @@ class jetmetUncertaintiesProducer(Module):
 
             if not self.isData:
                 genJet = pairs[jet]
+                is_matched = genJet is not None
+            else:
+                is_matched = False
 
             # get the jet for type-1 MET
             newjet = ROOT.TLorentzVector()
@@ -545,32 +562,40 @@ class jetmetUncertaintiesProducer(Module):
             # evaluate JER scale factors and uncertainties
             # cf. https://twiki.cern.ch/twiki/bin/view/CMS/JetResolution and
             # https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookJetEnergyResolution
-            # Pei-Zhu 
+            # Pei-Zhu
+            # FIXED jet horn 
             if not self.isData:
                 # Only apply JER smearing if the jet is matched to a genJet
-                if genJet is not None:
-                    (jet_pt_jerNomVal, jet_pt_jerUpVal,
-                    jet_pt_jerDownVal) = self.jetSmearer.getSmearValsPt(
-                        jet, genJet, rho)
+
+                is_matched = genJet is not None #matched genjet
+                is_in_jet_horn = (jet_pt < 50 and 2.5 < abs(jet.eta) < 3.0)
+                is_2016 = "2016" in self.era
+                
+                do_not_smear = (
+                    not is_matched and 
+                    is_in_jet_horn and 
+                    not is_2016
+                )
+
+                if do_not_smear:
+                    (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1., 1., 1.)
+
                 else:
                     # No genJet match, do not apply smearing
-                    (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1, 1, 1)
+                    if self.applySmearing: 
+                        (jet_pt_jerNomVal, jet_pt_jerUpVal,
+                    jet_pt_jerDownVal) = self.jetSmearer.getSmearValsPt(
+                        jet, genJet, rho)
+                    
+                    else:
+                        (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1., 1., 1.)
             else:
                 # if you want to do something with JER in data, please add it here.
-                (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1, 1, 1)
+                (jet_pt_jerNomVal, jet_pt_jerUpVal, jet_pt_jerDownVal) = (1., 1., 1.)
 
-            # these are the important jet pt values
-            #jet_pt_nom = jet_pt if jet_pt > 0 else 0
-            # Apply JER smearing only if conditions are met
-            # Pei-Zhu
-            # FIXED for JET HORN ISSUE
-            if (self.applySmearing and genJet is not None and 
-                not (jet_pt < 50 and 2.5 < abs(jet.eta) < 3.0 and "2016" not in self.era) ):
-                jet_pt_nom = jet_pt * jet_pt_jerNomVal
-                jet_mass_nom = jet_pt_jerNomVal * jet_mass
-            else:
-                jet_pt_nom = jet_pt
-                jet_mass_nom = jet_mass
+
+            jet_pt_nom = jet_pt * jet_pt_jerNomVal
+            jet_mass_nom = jet_mass * jet_pt_jerNomVal
 
             jet_pt_L1L2L3 = jet_pt_noMuL1L2L3 + muon_pt
             jet_pt_L1 = jet_pt_noMuL1 + muon_pt
@@ -609,6 +634,9 @@ class jetmetUncertaintiesProducer(Module):
                 jets_corr_JEC.append(jet_pt / jet_rawpt)
                 # can be used to undo JER
                 jets_corr_JER.append(jet_pt_jerNomVal)
+
+                # PZ, to store match jet
+                self.jetMatchedGenJet.append(is_matched)
 
             if not self.isData:
                 jet_pt_jerUp = {
@@ -977,7 +1005,10 @@ class jetmetUncertaintiesProducer(Module):
                 self.out.fillBranch(
                     "%s_pt_jes%sDown" % (self.jetBranchName, jesUncertainty),
                     jets_pt_jesDown[jesUncertainty])
-
+                # PZ, to store match jet
+                self.out.fillBranch("%s_matchedGenJet" % self.jetBranchName, 
+                                self.jetMatchedGenJet)
+            
                 if 'T1' in self.saveMETUncs:
                     self.out.fillBranch(
                         "%s_T1_pt_jes%sUp" %
@@ -1051,6 +1082,7 @@ class jetmetUncertaintiesProducer(Module):
             self.out.fillBranch(
                 "%s_T1Smear_phi_unclustEnDown" % self.metBranchName,
                 math.atan2(met_T1Smear_py_unclEnDown, met_T1Smear_px_unclEnDown))
+
 
         return True
 
