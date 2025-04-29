@@ -105,3 +105,5 @@ muonScaleRes2017 = lambda: muonScaleResProducer('roccor.Run2.v5',
 muonScaleRes2018 = lambda: muonScaleResProducer('roccor.Run2.v5',
                                                 'RoccoR2018UL.txt', 2018)
 #https://twiki.cern.ch/twiki/bin/viewauth/CMS/RochcorMuon
+# run3 
+#https://muon-wiki.docs.cern.ch/guidelines/corrections/#__tabbed_6_2

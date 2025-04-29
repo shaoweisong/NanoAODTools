@@ -73,4 +73,10 @@ python scripts/nano_postproc.py outDir /eos/cms/store/user/andrey/f.root -I Phys
 ```
 This module has the same structure of its producer as `exampleProducer`, but in addition it utilizes a C++ code to calculate the mht variable, `src/mhtjuProducerCppWorker.cc`. This code is loaded in the `__init__` method of the producer.
 
+### Resubmit
 
+[scripts/condor_resubmit.py](scripts/condor_resubmit.py): This script can be used to resubmit the failed condor jobs. It takes the condor log files as input and resubmits the failed jobs. It can be used as follows:
+
+   ```bash
+   python3 condor_resubmit.py -j <condor_job.jdl>  -l <condor_log_file_base_path> -o <condor_output_file_path> -n 1 -d True
+   ```

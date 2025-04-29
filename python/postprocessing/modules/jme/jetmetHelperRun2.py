@@ -225,7 +225,7 @@ def createJMECorrector(isMC=True,
 
 # In the main postprocessor script, user has to call the function,
 # e.g for 2016
-#jmeCorrections = createJMECorrector(False, "2016", "B", "Total", True, "AK4PFchs", False)
+# jmeCorrections = createJMECorrector(False, "2016", "B", "Total", True, "AK4PFchs", False)
 # include jmeCorrections() in the list of modules to run.
 ###
 jmeCorrections_mc_2017 = lambda: createJMECorrector(isMC=True, dataYear="UL2017", runPeriod="B", jesUncert="Total", jetType="AK4PFchs")
